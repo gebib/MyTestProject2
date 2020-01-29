@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import './App.css';
-import {
-  ButtonToolbar, Table, Button, Form, Col, Card
-} from 'react-bootstrap';
-import { FormRow } from 'react-bootstrap/Form';
+import { Table, Button, Form, Col, Card, Row } from 'react-bootstrap';
 
 class App extends Component {
   rowNrID = 0;
   state = {
+    lag: "HORDALAND",
+    lokalForening: "BERGEN",
     //Array for the table data.
     listOfTableData: [
-      { name: "Gebi", sureName: "Beshir", address: "Wiers jensens vei 32", post: "0533", email: "gebi9@hotmail.com", mobileNr: 46781314 },
-
+      {
+        name: "Gebi",
+        sureName: "Beshir",
+        address: "Wiers jensens vei 32",
+        post: "0533",
+        email: "gebi9@hotmail.com", mobileNr: 46781314,
+        lag: "HORDALAND",
+        forening: "BERGEN"
+      },
     ]
   }
 
@@ -21,6 +27,11 @@ class App extends Component {
 
   }
 
+  // User form submit.
+  submit = () => {
+    console.log('ok////:');
+    alert('You are registered!');
+  }
   ///render view
   render() {
     return (
@@ -29,7 +40,7 @@ class App extends Component {
         <div>
           {/* ///////////////Registration form///////////////// */}
           <Card bg="secondary" text="white" style={{ width: '100%' }}>
-            <Card.Header><h3>Kunde register</h3></Card.Header>
+            <Card.Header><h3>Registrasjon</h3></Card.Header>
             <Card.Body>
               <br />
               <Form>
@@ -50,14 +61,14 @@ class App extends Component {
                   <Form.Group as={Col} controlId="formGridAddress">
                     <Form.Control className="addressField" placeholder="ADRESSE" />
                   </Form.Group>
-                  <Form.Group as={Col} controlId="formGridEtternavn">
+                  <Form.Group as={Col} controlId="formGridPostNr">
                     <Form.Control className="postNrField" placeholder="POST NUMMER" />
                   </Form.Group>
                 </Form.Row>
 
                 {/* date-of-birth */}
                 <Form.Row>
-                  <Form.Group as={Col} controlId="formGridState">
+                  <Form.Group as={Col} controlId="formGridDay">
                     <Form.Control as="select">
                       <option>DAG</option>
                       <option>1</option>
@@ -67,7 +78,7 @@ class App extends Component {
                     </Form.Control>
                   </Form.Group>
 
-                  <Form.Group as={Col} controlId="formGridState">
+                  <Form.Group as={Col} controlId="formGridMonth">
                     <Form.Control as="select">
                       <option>MÅNE</option>
                       <option>Jan</option>
@@ -75,7 +86,7 @@ class App extends Component {
                     </Form.Control>
                   </Form.Group>
 
-                  <Form.Group as={Col} controlId="formGridState">
+                  <Form.Group as={Col} controlId="formGridYear">
                     <Form.Control as="select">
                       <option>ÅR</option>
                       <option>1991</option>
@@ -89,12 +100,34 @@ class App extends Component {
                   <Form.Group as={Col} controlId="formGridEmail">
                     <Form.Control type="email" placeholder="E-POST" />
                   </Form.Group>
-                  <Form.Group as={Col} controlId="formGridEtternavn">
+                  <Form.Group as={Col} controlId="formGridMobile">
                     <Form.Control className="postNrField" placeholder="MOBIL" />
                   </Form.Group>
                 </Form.Row>
+                <h6> Du tilhører laget « {this.state.lag} », vil du velge et annet lag?, angi her.</h6>
+                {/* fylkeslag : lokalforening */}
+                <Form.Row>
+                  <Form.Group as={Col} controlId="formGridLag">
+                    <Form.Control as="select">
+                      <option>{this.state.lag}</option>
+                      <option>HORDALAND</option>
+                      <option>OSLO</option>
+                      <option>NORDLAND</option>
+                    </Form.Control>
+                  </Form.Group>
+
+                  <Form.Group as={Col} controlId="formGridLokalForening">
+                    <Form.Control as="select">
+                      <option>{this.state.lokalForening}</option>
+                      <option>BERGEN</option>
+                      <option>ARNA</option>
+                      <option>SANDSLI</option>
+                      <option>SANDVIKKEN</option>
+                    </Form.Control>
+                  </Form.Group>
+                </Form.Row>
                 {/* submit button */}
-                <Button onClick={this.getDataFromAPI} variant="success" type="submit" style={{ width: '15rem' }}>
+                <Button onClick={this.submit} variant="success" type="submit" style={{ width: '15rem' }}>
                   Bli Frivillig
                  </Button>
               </Form>
@@ -112,6 +145,8 @@ class App extends Component {
               <th>Post</th>
               <th>E-Post</th>
               <th>Mobil</th>
+              <th>Lag</th>
+              <th>Forening</th>
             </tr>
           </thead>
           <tbody>
@@ -123,6 +158,8 @@ class App extends Component {
                 <td>{row.post}</td>
                 <td>{row.email}</td>
                 <td>{row.mobileNr}</td>
+                <td>{row.lag}</td>
+                <td>{row.forening}</td>
               </tr>
             ))}
           </tbody>
