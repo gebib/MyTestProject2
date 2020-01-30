@@ -12,7 +12,7 @@ class App extends Component {
     name: "",
     sureName: "",
     address: "",
-    post: "",
+    postNr: "",
     email: "",
     mobileNr: 0,
     lag: "",
@@ -23,7 +23,7 @@ class App extends Component {
     //Array for the table data.
     listOfTableData: [],
     dropDownDay: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 23, 24, 25, 25, 27, 28, 29, 30],
-    dropDownMonth: ["MÅNE", "Januar", "Februar", "Mars", "April", "Main", "Jun", "Juli", "August", "September", "Oktober", "November", "Desember"],
+    dropDownMonth: ["MÅNE", "Januar", "Februar", "Mars", "April", "Mai", "Jun", "Juli", "August", "September", "Oktober", "November", "Desember"],
     dropDownYear: [2007, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997, 1996, 1995, 1994, 1993, 1992, 1991, 1990],
     lokalForening: ["BERGEN", "ARNA", "VOSS", ".."],
     lag: "L"
@@ -35,25 +35,84 @@ class App extends Component {
 
   // User form submit.
   POST = () => {
-    this.validateForm();
+    if (this.validateForm()) {
+      this.setState(prevState => ({
+        listOfTableData: [...prevState.listOfTableData, this.tempFormData]
+      }));
+    }
   }
 
   //form validation
   validateForm = () => {
+    let isFormValid = true;
     const fd = this.tempFormData;
-    const isNameValid = (fd.name !== "");
-    const isSurNameValid = (fd.sureName !== "");
-    const isAddressValid = (fd.address !== "");
-    const isPostNrValid = this.validatePost(fd.postNr);
-    const isDayValid = !isNaN(fd.birthDay[0].day - parseFloat(fd.birthDay[0].day));
-    const isMonthValid = ((fd.birthDay[1].month !== "MÅNE") && (!!fd.birthDay[1].month));
-    const isYearValid = !isNaN(fd.birthDay[2].year - parseFloat(fd.birthDay[2].year));
-    const isMailValid = this.validateEmail(fd.email);
-    const isMobileNrValid = this.validateMobileNr(fd.mobileNr);
-    const isLagValid = ((fd.lag !== "LAG") && (!!fd.lag));
-    const isForeningValid = ((fd.forening !== "LOKALFORENING") && (!!fd.forening));
 
-     
+    if (!(fd.name !== "")) {
+      isFormValid = false;
+      this.showAlert("Navn");
+      return false;
+    }
+    if (!(fd.sureName !== "")) {
+      isFormValid = false;
+      this.showAlert("Etternavn");
+      return false;
+    }
+
+    if (!(fd.address !== "")) {
+      isFormValid = false;
+      this.showAlert("Adresse");
+      return false;
+    }
+    if (!(this.validatePost(fd.postNr))) {
+      isFormValid = false;
+      this.showAlert("Post nummer");
+      return false;
+    }
+
+    if (!(!isNaN(fd.birthDay[0].day - parseFloat(fd.birthDay[0].day)))) {
+      isFormValid = false;
+      this.showAlert("Dag");
+      return false;
+    }
+    if (!((fd.birthDay[1].month !== "MÅNE") && (!!fd.birthDay[1].month))) {
+      isFormValid = false;
+      this.showAlert("Måne");
+      return false;
+    }
+    if (!(!isNaN(fd.birthDay[2].year - parseFloat(fd.birthDay[2].year)))) {
+      isFormValid = false;
+      this.showAlert("År");
+      return false;
+    }
+
+    if (!(this.validateEmail(fd.email))) {
+      isFormValid = false;
+      this.showAlert("Mail");
+      return false;
+    }
+    if (!(this.validateMobileNr(fd.mobileNr))) {
+      isFormValid = false;
+      this.showAlert("Mobil nummer");
+      return false;
+    }
+
+    if (!((fd.lag !== "LAG") && (!!fd.lag))) {
+      isFormValid = false;
+      this.showAlert("Lag");
+      return false;
+    }
+    if (!((fd.forening !== "LOKALFORENING") && (!!fd.forening))) {
+      isFormValid = false;
+      this.showAlert("Lokal forening");
+      return false;
+    }
+
+    return isFormValid; // if any field in form, is missing data: isFormValidated = false.
+  }
+
+  //show error message
+  showAlert = (message) => {
+    alert(message + " Mangler! \nVennligst fyll ut " + message + ".");
   }
 
   // post validation,
@@ -94,7 +153,7 @@ class App extends Component {
     } catch (error) {
       isParsable = false;
     }
-    let is8Chars = (mobileNr.toString().lenth === 8);
+    let is8Chars = (mobileNr.toString().length === 8);
     if (is8Chars && isParsable) {
       return true;
     } else {
@@ -106,7 +165,7 @@ class App extends Component {
   setValue = (event) => {
     const controlId = event.target.id;
     const value = event.target.value;
-    console.log(value);
+    console.log('//////:', value);
     switch (controlId) {
       case "formName": { this.tempFormData.name = value; break; }
       case "formSurName": { this.tempFormData.sureName = value; break; }
@@ -152,7 +211,7 @@ class App extends Component {
                     <Form.Control onChange={this.setValue} type="text" placeholder="ADRESSE" />
                   </Form.Group>
                   <Form.Group as={Col} controlId="formPostNr">
-                    <Form.Control onChange={this.setValue} type="number" length={4} placeholder="POST NUMMER" />
+                    <Form.Control onChange={this.setValue} type="number" placeholder="POST NUMMER" />
                   </Form.Group>
                 </Form.Row>
 
@@ -239,7 +298,7 @@ class App extends Component {
                 <td onClick={this.test} >{row.name}</td>
                 <td>{row.sureName}</td>
                 <td>{row.address}</td>
-                <td>{row.post}</td>
+                <td>{row.postNr}</td>
                 <td>{row.email}</td>
                 <td>{row.mobileNr}</td>
                 <td>{row.lag}</td>
