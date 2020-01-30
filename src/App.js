@@ -26,7 +26,8 @@ class App extends Component {
     dropDownMonth: ["MÅNE", "Januar", "Februar", "Mars", "April", "Mai", "Jun", "Juli", "August", "September", "Oktober", "November", "Desember"],
     dropDownYear: [2007, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997, 1996, 1995, 1994, 1993, 1992, 1991, 1990],
     lokalForening: ["BERGEN", "ARNA", "VOSS", ".."],
-    lag: "L"
+    lag: "HORDALAND",
+    forening: "BERGEN"
   }
 
   // lifecycle hook: values that need to be initialized at every reload.
@@ -39,6 +40,8 @@ class App extends Component {
       this.setState(prevState => ({
         listOfTableData: [...prevState.listOfTableData, this.tempFormData]
       }));
+      ///////////////////////valid form data tobe sent to a database////////////////////
+      console.log("///////DATA: som skal sendes til database////////:\n", this.tempFormData);
     }
   }
 
@@ -165,7 +168,6 @@ class App extends Component {
   setValue = (event) => {
     const controlId = event.target.id;
     const value = event.target.value;
-    console.log('//////:', value);
     switch (controlId) {
       case "formName": { this.tempFormData.name = value; break; }
       case "formSurName": { this.tempFormData.sureName = value; break; }
@@ -176,14 +178,27 @@ class App extends Component {
       case "formYear": { this.tempFormData.birthDay[2].year = value; break; }
       case "formEmail": { this.tempFormData.email = value; break; }
       case "formMobile": { this.tempFormData.mobileNr = value; break; }
-      case "formLag": { this.tempFormData.lag = value; break; }
-      case "formLokalForening": { this.tempFormData.forening = value; break; }
+      case "formLag": {
+        this.tempFormData.lag = value;
+        if (value !== "LAG") {
+          this.setState({ lag: value });
+        }
+        break;
+      }
+      case "formLokalForening": {
+        this.tempFormData.forening = value;
+        if (value !== "LOKALFORENING") {
+          this.setState({ forening: value });
+        }
+        break;
+      }
       default: {
         //statements; 
         break;
       }
     }
   }
+
   ///render view
   render() {
     return (
@@ -247,7 +262,8 @@ class App extends Component {
                     <Form.Control onChange={this.setValue} type="number" placeholder="MOBIL" />
                   </Form.Group>
                 </Form.Row>
-                <h6> Du tilhører laget « {this.state.lag} », vil du velge et annet lag?, angi her.</h6>
+                <h6> Du tilhører laget « {this.state.lag} », og foreningen
+                 « {this.state.forening} »  vil du velge et annet lag?, angi her.</h6>
                 {/* fylkeslag : lokalforening */}
                 <Form.Row>
                   <Form.Group as={Col} controlId="formLag">
@@ -262,14 +278,14 @@ class App extends Component {
                   <Form.Group as={Col} controlId="formLokalForening">
                     <Form.Control as="select" onChange={this.setValue}>
                       <option>LOKALFORENING</option>
-                      <option>BERGEN</option>
-                      <option>ARNA</option>
-                      <option>VOSS</option>
+                      <option>Første Lag:</option>
+                      <option>Andre Lag:</option>
+                      <option>Tredje Lag: </option>
                     </Form.Control>
                   </Form.Group>
 
                 </Form.Row>
-                {/* submit button add typa SUBMIT! when done*/}
+                {/* submit button add type="submit" when done*/}
                 <Button onClick={this.POST} variant="success" style={{ width: '15rem' }}>
                   Bli Frivillig
                  </Button>
